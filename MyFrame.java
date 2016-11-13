@@ -19,18 +19,25 @@ public class MyFrame extends JFrame implements ActionListener{
 	private JPanel[] constraintpanel = new JPanel[11];
 	private JPanel centerpanel = new JPanel();
 	private JPanel bottompanel = new JPanel();
+	private JPanel northpanel = new JPanel();
+	private JPanel fillerpanel = new JPanel();
 
 	public MyFrame(){
 		super();
 		this.setTitle("Simplex Method Algorithm Sampler");
 		this.setLayout(new BorderLayout(10,10));
+		northpanel.setLayout(new GridLayout(2,1));
 		objpanel.setLayout(new FlowLayout(FlowLayout.CENTER,10,10));
 		objpanel.add(objlabel);
 		objpanel.add(objbox);
 		objpanel.add(objtxtfield);
 		objtxtfield.setText("Enter Objective Function Here");
+		northpanel.add(objpanel);
+		fillerpanel.setLayout(new FlowLayout(FlowLayout.CENTER,10,10));
+		fillerpanel.add(subjlabel);
+		northpanel.add(fillerpanel);
+		this.add(northpanel, BorderLayout.NORTH);
 		centerpanel.setLayout(new GridLayout(10,1));
-		this.add(objpanel, BorderLayout.NORTH);
 		for(int i = 0; i < 10; i++){
 			leftconstraints[i] = new JTextField(30);
 			rightconstraints[i] = new JTextField(4);
