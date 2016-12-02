@@ -15,12 +15,17 @@ public class DisplayFrame extends JFrame implements ActionListener{
 	public DisplayFrame(double[][] tableau){
 		output.append("Tableau from Original LP \n");
 		for(int i = 0; i < tableau.length;i++){
+			
+		}
+		for(int i = 0; i < tableau.length;i++){
 			for(int k =0; k < tableau[0].length; k++){
+				String index = String.format("%1$.2f ", tableau[i][k]);
+				index = String.format("%1$10s", index);
 				if(k == (tableau[0].length-1)){
-					output.append(tableau[i][k] + "\n");
+					output.append(index + "\n");
 					continue;
 				}
-				output.append(tableau[i][k] + " ");
+				output.append(index + " ");
 			}
 		}
 		this.tableau = tableau;
@@ -31,6 +36,7 @@ public class DisplayFrame extends JFrame implements ActionListener{
 		area = new JTextArea(50,50);
 		area.setText(output.toString());
 		pane = new JScrollPane(area);
+		area.setEditable(false);
 		this.setLayout(new BorderLayout(10,10));
 		this.add(pane,BorderLayout.CENTER);
 		this.add(buttonpanel,BorderLayout.SOUTH);
@@ -46,11 +52,13 @@ public class DisplayFrame extends JFrame implements ActionListener{
 				output.append("Tableau after row operations \n");
 				for(int i = 0; i < tableau.length;i++){
 					for(int k =0; k < tableau[0].length; k++){
+						String index = String.format("%1$.2f ", tableau[i][k]);
+						index = String.format("%1$10s", index);
 						if(k == (tableau[0].length-1)){
-							output.append(tableau[i][k] + "\n");
+							output.append(index + "\n");
 							continue;
 						}
-						output.append(tableau[i][k] + " ");
+						output.append(index + " ");
 					}
 				}
 				area.setText(output.toString());
@@ -145,7 +153,7 @@ public class DisplayFrame extends JFrame implements ActionListener{
 				 return false;	
 			 }
 		 }
-		 output.append("Optimality Criterion satisfied \n");
+		 output.append("Optimality Criterion satisfied with value " + tableau[tableau.length-1][tableau[0].length-1] +"\n");
 		 area.setText(output.toString());
 		 return true;
 	}

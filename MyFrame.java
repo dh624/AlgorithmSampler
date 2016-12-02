@@ -4,7 +4,7 @@ import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class MyFrame extends JDialog implements ActionListener{
-	
+	boolean isValid;
 	private String[] objboxoptions = {"Minimize", "Maximize"};
 	private String[] inequalities = {"=","<=",">="};
 	private JLabel subjlabel = new JLabel("Subject to:");
@@ -31,6 +31,7 @@ public class MyFrame extends JDialog implements ActionListener{
 	@SuppressWarnings("unchecked")
 	public MyFrame(int var, int con){
 		super();
+		isValid = true;
 		//this.setModal(true);
 		System.out.println("var: " + var);
 		System.out.println("con: " + con);
@@ -105,6 +106,9 @@ public class MyFrame extends JDialog implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		double[][] tableau = convertToMatrix();
+		if(!isValid){
+			return;
+		}
 		DisplayFrame frame = new DisplayFrame(tableau);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -128,7 +132,17 @@ public class MyFrame extends JDialog implements ActionListener{
 				multByNeg = -1;
 			}
 			for(int j = 0; j < variables.length;j++){
+				if(leftconstraints[i][j].getText().equals("")){
+					tableau[i][j] = 0;
+					continue;
+				}
+				try{
 				tableau[i][j] = Double.parseDouble(leftconstraints[i][j].getText())*multByNeg;
+				}catch(NumberFormatException e){
+					JOptionPane.showMessageDialog(this, leftconstraints[i][j].getText() + " isnt a valid double for the " + i + " " + j + " index");
+			        isValid = false;
+			        return tableau;
+				}
 			}
 			if(slackIndices[i] == 1){
 				//find slack position
@@ -140,11 +154,35 @@ public class MyFrame extends JDialog implements ActionListener{
 				}
 				tableau[i][variables.length+slackposition] = 1;
 			}
+			if(rightconstraints[i].getText().equals("")){
+				tableau[i][tableau[0].length-1] = 0;
+				continue;
+			}
+			try{
 			tableau[i][tableau[0].length-1] = Double.parseDouble(rightconstraints[i].getText())*multByNeg;
+			}catch(NumberFormatException e){
+				JOptionPane.showMessageDialog(this, rightconstraints[i].getText() + " isnt a valid double for the " + i + "th constraint ");
+				isValid = false;
+				return tableau;
+			}
 			
 		}
+		int multByNeg = 1;
+		if(objbox.getSelectedItem().toString().equals(("Maximize"))){
+			multByNeg = -1;
+		}
 		for(int i = 0; i < variables.length;i++){
-			tableau[tableau.length-1][i] = Double.parseDouble(objconstraints[i].getText()) * -1;
+			if(objconstraints[i].getText().trim().equals("")){
+				tableau[tableau.length-1][i] = 0;
+				continue;
+			}
+			try{
+			tableau[tableau.length-1][i] = Double.parseDouble(objconstraints[i].getText()) * multByNeg;
+			}catch(NumberFormatException e){
+				JOptionPane.showMessageDialog(this, objconstraints[i].getText() + " isnt a valid double for the " + i + "th  objective constraint ");
+				isValid = false;
+				return tableau;
+			}
 		}
 		tableau[tableau.length-1][tableau[0].length-1] = 0;
 		String output = "";
@@ -158,6 +196,7 @@ public class MyFrame extends JDialog implements ActionListener{
 			}
 		}
 		System.out.println(output);
+		isValid = true;
 		return tableau;
 	}
 }
